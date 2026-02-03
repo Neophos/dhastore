@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <meta name="theme-color" content="#2c3e50" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="black-translucent"
+        />
+        <title>DHA Store Counter</title>
+        <link rel="manifest" href="manifest.json" />
+        <link rel="icon" type="image/svg+xml" href="icons/icon-192.svg" />
+        <link rel="apple-touch-icon" href="icons/icon-192.svg" />
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <h1>Store Counter</h1>
+                <button id="undo-btn" class="undo-btn" disabled>Undo</button>
+            </header>
+
+            <nav class="tabs">
+                <button class="tab active" data-tab="products">Products</button>
+                <button class="tab" data-tab="stats">Stats</button>
+                <button class="tab" data-tab="settings">Settings</button>
+            </nav>
+
+            <main>
+                <section id="products-tab" class="tab-content active">
+                    <div id="products-grid" class="products-grid"></div>
+                </section>
+
+                <section id="stats-tab" class="tab-content">
+                    <div class="stats-container">
+                        <div class="period-selector">
+                            <button
+                                class="period-btn active"
+                                data-period="daily"
+                            >
+                                Today
+                            </button>
+                            <button class="period-btn" data-period="weekly">
+                                This Week
+                            </button>
+                            <button class="period-btn" data-period="monthly">
+                                This Month
+                            </button>
+                        </div>
+                        <div class="stats-cards">
+                            <div class="stat-card">
+                                <span class="stat-label">Items Sold</span>
+                                <span id="stat-items" class="stat-value"
+                                    >0</span
+                                >
+                            </div>
+                            <div class="stat-card revenue">
+                                <span class="stat-label">Revenue</span>
+                                <span id="stat-revenue" class="stat-value"
+                                    >$0.00</span
+                                >
+                            </div>
+                            <div class="stat-card cost">
+                                <span class="stat-label">Cost</span>
+                                <span id="stat-cost" class="stat-value"
+                                    >$0.00</span
+                                >
+                            </div>
+                            <div class="stat-card profit">
+                                <span class="stat-label">Profit</span>
+                                <span id="stat-profit" class="stat-value"
+                                    >$0.00</span
+                                >
+                            </div>
+                        </div>
+                        <div class="sales-history">
+                            <h3>Recent Sales</h3>
+                            <div id="sales-list" class="sales-list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="settings-tab" class="tab-content">
+                    <div class="settings-container">
+                        <h3>Manage Products</h3>
+                        <div id="product-list" class="product-list"></div>
+                        <button id="add-product-btn" class="add-product-btn">
+                            + Add Product
+                        </button>
+
+                        <h3>Data Management</h3>
+                        <button id="export-btn" class="action-btn">
+                            Export Data
+                        </button>
+                        <button id="import-btn" class="action-btn">
+                            Import Data
+                        </button>
+                        <input
+                            type="file"
+                            id="import-file"
+                            accept=".json"
+                            style="display: none"
+                        />
+                        <button id="clear-sales-btn" class="action-btn danger">
+                            Clear All Sales
+                        </button>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div id="modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="modal-title">Add Product</h2>
+                <form id="product-form">
+                    <input type="hidden" id="product-id" />
+                    <div class="form-group">
+                        <label for="product-name">Name</label>
+                        <input type="text" id="product-name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="product-cost">Cost ($)</label>
+                        <input
+                            type="number"
+                            id="product-cost"
+                            step="0.01"
+                            min="0"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Selling Price ($)</label>
+                        <input
+                            type="number"
+                            id="product-price"
+                            step="0.01"
+                            min="0"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="product-image">Image</label>
+                        <input
+                            type="file"
+                            id="product-image"
+                            accept="image/*"
+                        />
+                        <div id="image-preview" class="image-preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-color">Button Color</label>
+                        <input
+                            type="color"
+                            id="product-color"
+                            value="#3498db"
+                        />
+                    </div>
+                    <div class="form-actions">
+                        <button
+                            type="button"
+                            id="cancel-btn"
+                            class="cancel-btn"
+                        >
+                            Cancel
+                        </button>
+                        <button type="submit" class="save-btn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+
+        <script src="app.js"></script>
+    </body>
+</html>
