@@ -1,10 +1,17 @@
 // DHA Store Counter - Main Application
 
 // ============ Data Storage ============
+const CURRENCIES = {
+  USD: { symbol: "$", code: "USD", name: "US Dollar" },
+  SEK: { symbol: "kr", code: "SEK", name: "Swedish Krona" },
+  PHP: { symbol: "₱", code: "PHP", name: "Philippine Peso" },
+};
+
 const Storage = {
   PRODUCTS_KEY: "dhastore_products",
   SALES_KEY: "dhastore_sales",
   UNDO_KEY: "dhastore_undo",
+  CURRENCY_KEY: "dhastore_currency",
 
   save(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
@@ -58,6 +65,14 @@ const Storage = {
   saveUndoStack(stack) {
     this.save(this.UNDO_KEY, stack);
   },
+
+  getCurrency() {
+    return this.load(this.CURRENCY_KEY) || "USD";
+  },
+
+  saveCurrency(currency) {
+    this.save(this.CURRENCY_KEY, currency);
+  },
 };
 
 // ============ State ============
@@ -65,6 +80,7 @@ let products = Storage.getProducts();
 let sales = Storage.getSales();
 let undoStack = Storage.getUndoStack();
 let currentPeriod = "daily";
+let currentCurrency = Storage.getCurrency();
 
 // ============ Default Products ============
 const DEFAULT_PRODUCTS = [
@@ -129,7 +145,12 @@ function generateId() {
 }
 
 function formatCurrency(amount) {
-  return "$" + amount.toFixed(2);
+  const currency = CURRENCIES[currentCurrency];
+  // For SEK, symbol comes after the amount
+  if (currentCurrency === "SEK") {
+    return amount.toFixed(2) + " " + currency.symbol;
+  }
+  return currency.symbol + amount.toFixed(2);
 }
 
 function getStartOfDay(date = new Date()) {
@@ -569,6 +590,24 @@ function switchPeriod(period) {
   renderStats();
 }
 
+function setCurrency(currency) {
+  currentCurrency = currency;
+  Storage.saveCurrency(currency);
+  renderProducts();
+  renderStats();
+  renderProductList();
+  updateCurrencyLabels();
+  showToast(`Currency set to ${CURRENCIES[currency].name}`);
+}
+
+function updateCurrencyLabels() {
+  const symbol = CURRENCIES[currentCurrency].symbol;
+  const costLabel = document.querySelector('label[for="product-cost"]');
+  const priceLabel = document.querySelector('label[for="product-price"]');
+  if (costLabel) costLabel.textContent = `Cost (${symbol})`;
+  if (priceLabel) priceLabel.textContent = `Selling Price (${symbol})`;
+}
+
 // ============ Event Listeners ============
 document.addEventListener("DOMContentLoaded", () => {
   // Register service worker
@@ -622,7 +661,14 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   document.getElementById("clear-sales-btn").onclick = clearAllSales;
 
+  // Currency selector
+  document.getElementById("currency-select").value = currentCurrency;
+  document.getElementById("currency-select").onchange = (e) => {
+    setCurrency(e.target.value);
+  };
+
   // Initial render
   renderProducts();
   updateUndoButton();
+  updateCurrencyLabels();
 });
