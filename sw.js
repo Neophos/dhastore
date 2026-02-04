@@ -1,12 +1,12 @@
-const CACHE_NAME = "dhastore-v1";
+const CACHE_NAME = "dhastore-v2";
 const ASSETS = [
-  "/",
-  "/index.html",
-  "/styles.css",
-  "/app.js",
-  "/manifest.json",
-  "/icons/icon-192.svg",
-  "/icons/icon-512.svg",
+  "./",
+  "./index.html",
+  "./styles.css",
+  "./app.js",
+  "./manifest.json",
+  "./icons/icon-192.svg",
+  "./icons/icon-512.svg",
 ];
 
 // Install service worker and cache all assets

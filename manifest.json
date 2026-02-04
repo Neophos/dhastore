@@ -2,7 +2,7 @@
   "name": "DHA Store Counter",
   "short_name": "Store Counter",
   "description": "Simple offline store sales counter with profit tracking",
-  "start_url": "/",
+  "start_url": "/dhastore/",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#2c3e50",
